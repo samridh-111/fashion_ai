@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Large dataset files
+*.zip
+clothes-dataset.zip
+
+# Data directory (if you don't want to track the dataset)
+data/
+
+# Virtual environment (if you use one)
+venv/
+env/
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
