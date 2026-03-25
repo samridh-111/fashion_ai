@@ -8,21 +8,19 @@ from tqdm import tqdm
 DATA_DIR = "data"
 OUTPUT_FILE = "features.npz"
 
-# Load pretrained CNN model (ImageNet weights, no top layers)
-model = VGG16(weights="imagenet", include_top=False, pooling="avg")
 
 def extract_features(img_path):
-    """Extract feature vector from image using pretrained VGG16"""
     try:
         img = image.load_img(img_path, target_size=(224, 224))
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
-        x = preprocess_input(x)
-        features = model.predict(x, verbose=0)
+        x = preprocess_input(x) 
+        features = embedding_model.predict(x, verbose=0)
         return features.flatten()
     except Exception as e:
-        print(f"⚠️ Skipped {img_path}: {e}")
+        print(f"Error loading {img_path}: {e}")
         return None
+
 
 def process_folder(folder_path):
     """Extract features for all images in a folder"""
