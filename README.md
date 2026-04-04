@@ -9,17 +9,17 @@
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-- 👕 **Wardrobe Management**: Upload your tops and bottoms through a modern, intuitive interface.
-- 🧠 **AI-Powered Analysis**: Uses pre-trained Convolutional Neural Networks (ResNet50/VGG16) to "see" your clothes.
-- 🎯 **Smart Recommendations**: Finds the best matches based on visual similarity and occasion-specific logic.
-- 🚀 **One-Click Launch**: A single command starts the backend and opens the frontend in your browser.
-- 📱 **Responsive Design**: A sleek, dark-mode dashboard that works on any device.
+- **Wardrobe Management**: Upload your tops and bottoms through a modern, intuitive interface.
+-  **AI-Powered Analysis**: Uses pre-trained Convolutional Neural Networks (ResNet50/VGG16) to "see" your clothes.
+-  **Smart Recommendations**: Finds the best matches based on visual similarity and occasion-specific logic.
+-  **One-Click Launch**: A single command starts the backend and opens the frontend in your browser.
+-  **Responsive Design**: A sleek, dark-mode dashboard that works on any device.
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Backend core**: [FastAPI](https://fastapi.tiangolo.com/) (Python)
 - **Deep Learning**: [TensorFlow](https://wwww.tensorflow.org/) & [Keras](https://keras.io/) (ResNet50, VGG16)
@@ -30,7 +30,7 @@
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### 1. Prerequisites
 
@@ -77,7 +77,7 @@ This will:
 
 ---
 
-## 🧠 How it Works
+##  How it Works
 
 1. **Feature Extraction**: When you upload an image, it's passed through a Deep Learning model (ResNet50). The model converts the visual information into a unique "fingerprint" called a **feature vector** (a list of 2048 numbers).
 2. **Similarity Matching**: To find a match for a top, the system compares its feature vector against all stored bottoms using **Cosine Similarity**.
@@ -86,14 +86,14 @@ This will:
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request.
 
-*Made with ❤️ for the Fashion Community.*
+*Made for the Fashion Community.*
