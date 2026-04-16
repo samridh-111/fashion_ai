@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Stylist — The Digital Atelier</title>
+    <meta name="description" content="AI-powered personal stylist that recommends outfits based on your wardrobe, occasion, and visual ML scoring.">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        app: {
+                            sidebar: '#111114',
+                            main: '#18181b',
+                            card: '#222227',
+                            cardHover: '#2a2a30',
+                            accent: '#6b5894',
+                            accentHover: '#7e6ba8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+        body { background-color: #18181b; color: #ffffff; margin: 0; padding: 0; overflow: hidden; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(107,88,148,0); } 50% { box-shadow: 0 0 20px 4px rgba(107,88,148,0.35); } }
+        .fade-in { animation: fadeIn 0.45s ease-out forwards; }
+        .slide-in { animation: slideIn 0.35s ease-out forwards; }
+        .pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+        .demo-badge { background: linear-gradient(135deg,#6b5894,#4f3d75); font-size:11px; letter-spacing:.06em; }
+        .score-ring-track { stroke: #27272a; }
+        input:focus, textarea:focus { outline: none; }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ─── Demo / Mock data ──────────────────────────────────────────────────────────
+// Curated Unsplash fashion photos (free to use, deterministic)
+const DEMO_TOPS = [
+    { id:'t1', filename:'White Linen Shirt', category:'top', image_url:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80', brightness:0.87, saturation:0.04, dominant_colors:[[240,238,234]] },
+    { id:'t2', filename:'Navy Crew Sweatshirt', category:'top', image_url:'https://images.unsplash.com/photo-1578681994506-b8f463449011?w=400&q=80', brightness:0.28, saturation:0.41, dominant_colors:[[34,52,96]] },
+    { id:'t3', filename:'Striped Breton Top', category:'top', image_url:'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=400&q=80', brightness:0.71, saturation:0.09, dominant_colors:[[52,52,60]] },
+    { id:'t4', filename:'Black Turtleneck', category:'top', image_url:'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=400&q=80', brightness:0.12, saturation:0.03, dominant_colors:[[20,20,20]] },
+    { id:'t5', filename:'Sage Green Linen', category:'top', image_url:'https://images.unsplash.com/photo-1604695573706-53170668f6a6?w=400&q=80', brightness:0.68, saturation:0.27, dominant_colors:[[143,166,135]] },
+];
+const DEMO_BOTTOMS = [
+    { id:'b1', filename:'Slim Fit Chinos', category:'bottom', image_url:'https://images.unsplash.com/photo-1548883354-94bcfe321cbb?w=400&q=80', brightness:0.74, saturation:0.22, dominant_colors:[[180,161,130]] },
+    { id:'b2', filename:'Dark Wash Jeans', category:'bottom', image_url:'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&q=80', brightness:0.22, saturation:0.30, dominant_colors:[[40,55,88]] },
+    { id:'b3', filename:'Tailored Trousers', category:'bottom', image_url:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&q=80', brightness:0.38, saturation:0.08, dominant_colors:[[78,78,82]] },
+    { id:'b4', filename:'White Linen Shorts', category:'bottom', image_url:'https://images.unsplash.com/photo-1591195853828-11db59a44f43?w=400&q=80', brightness:0.90, saturation:0.05, dominant_colors:[[235,233,228]] },
+];
+
+const DEMO_RECOMMENDATIONS = {
+    casual: [
+        { top: DEMO_TOPS[0], bottom: DEMO_BOTTOMS[0], match_score: 87, explanation: '87% match — great color harmony, balanced tones, perfect for the occasion.', score_breakdown: { visual: 0.88, color: 0.91, occasion: 0.83, brightness: 0.84 } },
+        { top: DEMO_TOPS[1], bottom: DEMO_BOTTOMS[1], match_score: 82, explanation: '82% match — matching style, great color harmony.', score_breakdown: { visual: 0.84, color: 0.86, occasion: 0.77, brightness: 0.80 } },
+        { top: DEMO_TOPS[2], bottom: DEMO_BOTTOMS[3], match_score: 79, explanation: '79% match — balanced tones, great color harmony.', score_breakdown: { visual: 0.80, color: 0.82, occasion: 0.74, brightness: 0.78 } },
+        { top: DEMO_TOPS[4], bottom: DEMO_BOTTOMS[0], match_score: 75, explanation: '75% match — perfect for the occasion, matching style.', score_breakdown: { visual: 0.77, color: 0.78, occasion: 0.79, brightness: 0.73 } },
+    ],
+    office: [
+        { top: DEMO_TOPS[0], bottom: DEMO_BOTTOMS[2], match_score: 93, explanation: '93% match — great color harmony, matching style, perfect for the occasion.', score_breakdown: { visual: 0.94, color: 0.95, occasion: 0.91, brightness: 0.92 } },
+        { top: DEMO_TOPS[3], bottom: DEMO_BOTTOMS[2], match_score: 89, explanation: '89% match — matching style, balanced tones, perfect for the occasion.', score_breakdown: { visual: 0.91, color: 0.88, occasion: 0.90, brightness: 0.88 } },
+        { top: DEMO_TOPS[4], bottom: DEMO_BOTTOMS[2], match_score: 84, explanation: '84% match — great color harmony, balanced tones.', score_breakdown: { visual: 0.85, color: 0.87, occasion: 0.82, brightness: 0.83 } },
+    ],
+    party: [
+        { top: DEMO_TOPS[3], bottom: DEMO_BOTTOMS[1], match_score: 91, explanation: '91% match — matching style, great color harmony, perfect for the occasion.', score_breakdown: { visual: 0.93, color: 0.90, occasion: 0.94, brightness: 0.89 } },
+        { top: DEMO_TOPS[1], bottom: DEMO_BOTTOMS[2], match_score: 86, explanation: '86% match — matching style, balanced tones.', score_breakdown: { visual: 0.88, color: 0.85, occasion: 0.87, brightness: 0.85 } },
+    ],
+    date: [
+        { top: DEMO_TOPS[3], bottom: DEMO_BOTTOMS[2], match_score: 95, explanation: '95% match — great color harmony, matching style, perfect for the occasion, balanced tones.', score_breakdown: { visual: 0.96, color: 0.97, occasion: 0.95, brightness: 0.94 } },
+        { top: DEMO_TOPS[0], bottom: DEMO_BOTTOMS[2], match_score: 90, explanation: '90% match — great color harmony, balanced tones.', score_breakdown: { visual: 0.92, color: 0.93, occasion: 0.88, brightness: 0.90 } },
+    ],
+};
+
+function getRecsForOccasion(occ) {
+    const key = occ.toLowerCase().trim();
+    if (key.includes('office') || key.includes('work') || key.includes('business') || key.includes('formal') || key.includes('interview')) return DEMO_RECOMMENDATIONS.office;
+    if (key.includes('party') || key.includes('club') || key.includes('night')) return DEMO_RECOMMENDATIONS.party;
+    if (key.includes('date') || key.includes('dinner') || key.includes('romantic')) return DEMO_RECOMMENDATIONS.date;
+    return DEMO_RECOMMENDATIONS.casual;
+}
+
+// ─── Utilities ────────────────────────────────────────────────────────────────
+const ToastManager = {
+    listeners: [],
+    subscribe(fn) { this.listeners.push(fn); },
+    show(msg, type = 'info') { this.listeners.forEach(l => l(msg, type)); }
+};
+
+const ToastContainer = () => {
+    const [toasts, setToasts] = useState([]);
+    useEffect(() => {
+        ToastManager.subscribe((msg, type) => {
+            const id = Date.now() + Math.random();
+            setToasts(p => [...p, { id, msg, type }]);
+            setTimeout(() => setToasts(p => p.filter(t => t.id !== id)), 3500);
+        });
+    }, []);
+    return (
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none">
+            {toasts.map(t => (
+                <div key={t.id} className={`fade-in px-4 py-3 rounded-xl text-sm font-medium shadow-2xl border flex items-center gap-3 bg-app-card text-white
+                    ${t.type==='success' ? 'border-emerald-500/50' : t.type==='error' ? 'border-red-500/50' : 'border-[#3f3f46]'}`}>
+                    {t.type==='success' && <div className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />}
+                    {t.type==='error' && <div className="w-2 h-2 rounded-full bg-red-400 shrink-0" />}
+                    {t.type==='info' && <div className="w-2 h-2 rounded-full bg-violet-400 shrink-0" />}
+                    {t.msg}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+// ─── SVG Icons ────────────────────────────────────────────────────────────────
+const Icons = {
+    Upload: ({className}) => (<svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>),
+    Hanger: ({className, size=18}) => (<svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10.5V12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1.5"/><path d="M12 2v3"/><path d="m14 7-2 2-2-2"/><path d="M12 4A3 3 0 0 0 9 7v1"/></svg>),
+    Sparkles: ({className}) => (<svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>),
+    Chart: ({className}) => (<svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 17v-4"/><path d="M12 17v-8"/><path d="M17 17v-6"/></svg>),
+    CloudUpload: ({className}) => (<svg className={className} width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>),
+    Trash: ({className}) => (<svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>),
+    Info: ({className}) => (<svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>),
+    Github: ({className}) => (<svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>),
+};
+
+// ─── Score Ring ───────────────────────────────────────────────────────────────
+const ScoreRing = ({ score }) => {
+    const c = 2 * Math.PI * 26;
+    const offset = c - (score / 100) * c;
+    const color = score >= 80 ? '#34d399' : score >= 60 ? '#fbbf24' : '#f87171';
+    return (
+        <div className="relative w-[56px] h-[56px] shrink-0 flex items-center justify-center">
+            <svg className="transform -rotate-90 w-full h-full" viewBox="0 0 60 60">
+                <circle cx="30" cy="30" r="26" stroke="#27272a" strokeWidth="4" fill="none"/>
+                <circle cx="30" cy="30" r="26" stroke={color} strokeWidth="4" fill="none" strokeDasharray={c} strokeDashoffset={offset} strokeLinecap="round" className="transition-all duration-1000 ease-out"/>
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-sm font-bold" style={{color}}>{score}</span>
+            </div>
+        </div>
+    );
+};
+
+// ─── Outfit Card ──────────────────────────────────────────────────────────────
+const OutfitCard = ({ rec, onLike, onReject, idx, liked }) => {
+    const bd = rec.score_breakdown || {};
+    return (
+        <div className="bg-app-card border border-[#2e2e32] rounded-2xl overflow-hidden shadow-xl flex flex-col fade-in group" style={{animationDelay:`${idx*0.06}s`}}>
+            <div className="grid grid-cols-2 gap-[1px] bg-[#2e2e32]">
+                <div className="bg-app-card p-3 pb-2">
+                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest block mb-1.5">Top</span>
+                    <img src={rec.top.image_url} alt="Top" className="w-full aspect-square object-cover rounded-xl bg-[#18181b]" loading="lazy"/>
+                    <p className="text-[10px] text-zinc-400 mt-1.5 truncate">{rec.top.filename}</p>
+                </div>
+                <div className="bg-app-card p-3 pb-2">
+                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest block mb-1.5">Bottom</span>
+                    <img src={rec.bottom.image_url} alt="Bottom" className="w-full aspect-square object-cover rounded-xl bg-[#18181b]" loading="lazy"/>
+                    <p className="text-[10px] text-zinc-400 mt-1.5 truncate">{rec.bottom.filename}</p>
+                </div>
+            </div>
+
+            <div className="p-5 flex-1 flex flex-col">
+                <div className="flex items-start gap-4 mb-5">
+                    <ScoreRing score={rec.match_score}/>
+                    <p className="text-[13px] text-zinc-200 leading-snug font-medium">{rec.explanation}</p>
+                </div>
+
+                <div className="space-y-2 mb-5">
+                    {Object.entries(bd).map(([k,v]) => (
+                        <div key={k} className="flex items-center text-[10px] font-medium tracking-wide">
+                            <span className="w-16 text-zinc-500 uppercase">{k}</span>
+                            <div className="flex-1 bg-[#18181b] rounded-full h-1 ml-2">
+                                <div className="bg-app-accent h-1 rounded-full transition-all duration-700 ease-out" style={{width:`${v*100}%`}}/>
+                            </div>
+                            <span className="ml-3 text-zinc-400 w-8 text-right">{(v*100).toFixed(0)}%</span>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="flex gap-2 mt-auto pt-4 border-t border-[#2e2e32]/80">
+                    <button
+                        onClick={() => onLike(rec.top.id, rec.bottom.id)}
+                        className={`flex-1 py-2.5 rounded-xl font-medium transition-all text-xs border ${liked ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border-emerald-500/10 hover:border-emerald-500/30'}`}>
+                        {liked ? '❤️ Saved' : 'Perfect Match'}
+                    </button>
+                    <button
+                        onClick={() => onReject(rec.top.id, rec.bottom.id)}
+                        className="flex-1 bg-[#18181b] text-zinc-300 hover:text-white border border-[#3f3f46] hover:bg-[#3f3f46]/50 py-2.5 rounded-xl font-medium transition-colors text-xs">
+                        Replace
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// ─── Upload Zone ──────────────────────────────────────────────────────────────
+const UploadZone = ({ category, onUpload }) => {
+    const [isDragging, setIsDragging] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const fileRef = useRef(null);
+
+    const processFile = (file) => {
+        if (!file || !file.type.startsWith('image/')) {
+            ToastManager.show('Please upload an image file (JPG, PNG)', 'error');
+            return;
+        }
+        setUploading(true);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setTimeout(() => {
+                const newItem = {
+                    id: `user-${Date.now()}`,
+                    filename: file.name.replace(/\.[^/.]+$/, ''),
+                    category,
+                    image_url: e.target.result,
+                    brightness: 0.6,
+                    saturation: 0.2,
+                    dominant_colors: [[128,128,128]],
+                    _userUploaded: true,
+                };
+                onUpload(newItem);
+                setUploading(false);
+                ToastManager.show(`${category === 'top' ? 'Top' : 'Bottom'} added to your wardrobe!`, 'success');
+            }, 800);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    return (
+        <div
+            className={`flex-1 border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-8 transition-all cursor-pointer relative overflow-hidden group min-h-[160px]
+                ${isDragging ? 'border-app-accent bg-[#2a2a30] scale-[1.01]' : 'border-[#3f3f46]/60 bg-[#1a1a1e]/50 hover:border-[#52525b] hover:bg-[#202024]'}`}
+            onDrop={(e) => { e.preventDefault(); setIsDragging(false); processFile(e.dataTransfer.files[0]); }}
+            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+            onDragLeave={() => setIsDragging(false)}
+            onClick={() => fileRef.current?.click()}
+        >
+            <input ref={fileRef} type="file" accept="image/*" onChange={(e) => processFile(e.target.files?.[0])} className="hidden"/>
+            {uploading ? (
+                <div className="flex flex-col items-center text-zinc-400 text-sm">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-app-accent mb-3"/>
+                    Processing...
+                </div>
+            ) : (
+                <>
+                    <div className="mb-4 text-[#8a8a93] group-hover:text-white transition-colors duration-300">
+                        <Icons.CloudUpload/>
+                    </div>
+                    <p className="font-semibold text-white text-sm mb-1.5">Drag & drop or click to upload</p>
+                    <p className="text-[11px] text-[#71717a]">JPG, PNG — Max 10MB</p>
+                </>
+            )}
+        </div>
+    );
+};
+
+// ─── Wardrobe Item ─────────────────────────────────────────────────────────────
+const WardrobeItem = ({ item, onDelete }) => (
+    <div className="relative group bg-app-card border border-[#2e2e32] rounded-xl overflow-hidden shadow-lg p-1.5 transition-transform hover:-translate-y-1 fade-in">
+        <img src={item.image_url} alt={item.filename} className="w-full aspect-[4/5] object-cover rounded-lg bg-[#18181b]" loading="lazy"/>
+        <p className="text-[10px] text-zinc-400 text-center mt-1.5 px-1 truncate">{item.filename}</p>
+        <button
+            onClick={() => onDelete(item.id)}
+            className="absolute top-3 right-3 bg-red-500/90 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600">
+            <Icons.Trash className="w-3 h-3"/>
+        </button>
+    </div>
+);
+
+// ─── Main App ─────────────────────────────────────────────────────────────────
+const App = () => {
+    const [activeTab, setActiveTab] = useState('upload');
+    const [wardrobe, setWardrobe] = useState({ tops: [...DEMO_TOPS], bottoms: [...DEMO_BOTTOMS] });
+    const [recommendations, setRecommendations] = useState([]);
+    const [likedIds, setLikedIds] = useState(new Set());
+    const [removedRecs, setRemovedRecs] = useState(new Set());
+    const [occasion, setOccasion] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [isDemo, setIsDemo] = useState(true);
+
+    const totalItems = wardrobe.tops.length + wardrobe.bottoms.length;
+    const totalLooks = recommendations.length;
+
+    const handleUpload = (category, item) => {
+        setWardrobe(prev => ({
+            ...prev,
+            [category + 's']: [...prev[category + 's'], item]
+        }));
+        setIsDemo(false);
+    };
+
+    const handleDelete = (itemId) => {
+        setWardrobe(prev => ({
+            tops: prev.tops.filter(i => i.id !== itemId),
+            bottoms: prev.bottoms.filter(i => i.id !== itemId),
+        }));
+        ToastManager.show('Item removed', 'success');
+    };
+
+    const handleRecommend = () => {
+        if (!occasion.trim()) { ToastManager.show('Please enter an occasion', 'info'); return; }
+        if (wardrobe.tops.length === 0 || wardrobe.bottoms.length === 0) {
+            ToastManager.show('Add at least one top and one bottom first', 'error'); return;
+        }
+        setLoading(true);
+        setRemovedRecs(new Set());
+        setTimeout(() => {
+            const recs = getRecsForOccasion(occasion);
+            setRecommendations(recs);
+            setActiveTab('recommendations');
+            setLoading(false);
+            ToastManager.show(`${recs.length} outfits curated for "${occasion}"`, 'success');
+        }, 1200);
+    };
+
+    const handleLike = (topId, bottomId) => {
+        const key = `${topId}-${bottomId}`;
+        setLikedIds(prev => new Set([...prev, key]));
+        ToastManager.show('Saved to your favourites ❤️', 'success');
+    };
+
+    const handleReject = (topId, bottomId) => {
+        const key = `${topId}-${bottomId}`;
+        setRemovedRecs(prev => new Set([...prev, key]));
+        ToastManager.show('Outfit replaced', 'info');
+    };
+
+    const visibleRecs = recommendations.filter(r => !removedRecs.has(`${r.top.id}-${r.bottom.id}`));
+
+    const NAV = [
+        { id:'upload', label:'Upload', icon:'Upload' },
+        { id:'wardrobe', label:'Wardrobe', icon:'Hanger' },
+        { id:'recommend', label:'Generate Looks', icon:'Sparkles' },
+        { id:'recommendations', label:'Results', icon:'Chart' },
+    ];
+
+    return (
+        <div className="flex h-screen w-full bg-app-main text-white overflow-hidden">
+            {/* Sidebar */}
+            <aside className="w-[220px] flex-shrink-0 bg-app-sidebar border-r border-[#27272a]/80 flex flex-col px-4 py-8 z-20">
+                <div className="mb-2 px-2 cursor-pointer" onClick={() => setActiveTab('upload')}>
+                    <h1 className="text-xl font-bold tracking-tight text-white mb-0.5">AI Stylist</h1>
+                    <p className="text-[10px] tracking-widest text-[#8a8a93] uppercase">The Digital Atelier</p>
+                </div>
+
+                {/* Demo badge */}
+                <div className="mb-8 px-2">
+                    <span className="demo-badge text-white/80 px-2.5 py-1 rounded-full inline-flex items-center gap-1.5 font-semibold uppercase tracking-widest">
+                        <span className="w-1.5 h-1.5 bg-violet-300 rounded-full animate-pulse"/>
+                        Demo Mode
+                    </span>
+                </div>
+
+                <nav className="flex flex-col gap-1">
+                    {NAV.map(n => {
+                        const Icon = Icons[n.icon];
+                        return (
+                            <button key={n.id} onClick={() => setActiveTab(n.id)}
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left
+                                    ${activeTab===n.id ? 'bg-[#27272a] text-white' : 'text-[#8a8a93] hover:text-white hover:bg-[#27272a]/40'}`}>
+                                <Icon className="w-5 h-5 shrink-0"/> {n.label}
+                            </button>
+                        );
+                    })}
+                </nav>
+
+                {/* GitHub link */}
+                <div className="mt-auto px-2">
+                    <a href="https://github.com/samridh-111/fashion_ai" target="_blank"
+                        className="flex items-center gap-2 text-[#8a8a93] hover:text-white transition-colors text-xs py-2">
+                        <Icons.Github className="w-4 h-4"/> View on GitHub
+                    </a>
+                    <p className="text-[10px] text-[#52525b] leading-relaxed mt-2">
+                        Run locally for full ML-powered recommendations with your own wardrobe.
+                    </p>
+                </div>
+            </aside>
+
+            {/* Main */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+                {/* Topbar */}
+                <header className="h-[60px] flex items-center border-b border-[#27272a]/50 bg-app-main/80 backdrop-blur-md px-6 gap-x-8 text-xs font-semibold tracking-wide z-10 shadow-sm">
+                    <span className="text-white text-sm">Wardrobe Intelligence</span>
+                    <span className="text-[#8a8a93]">ITEMS: {totalItems}</span>
+                    <span className="text-[#8a8a93]">LIKED: {likedIds.size}</span>
+                    <span className="text-emerald-400">AI CONFIDENCE: 98%</span>
+                    <div className="ml-auto flex items-center gap-2">
+                        <Icons.Info className="text-violet-400"/>
+                        <span className="text-violet-400/80">Demo — real ML runs locally</span>
+                    </div>
+                </header>
+
+                <main className="flex-1 overflow-y-auto pt-0 pb-12 px-8 lg:px-14">
+                    {/* Upload Tab */}
+                    {activeTab === 'upload' && (
+                        <div className="max-w-4xl mx-auto flex flex-col fade-in pt-12 pb-8">
+                            <div className="mb-10">
+                                <h2 className="text-[40px] leading-none font-extrabold tracking-tight mb-4 text-white">Build your wardrobe</h2>
+                                <p className="text-[#a1a1aa] text-[15px] max-w-xl leading-relaxed">
+                                    Upload your clothing items — or explore with the pre-loaded demo pieces — then generate AI-curated outfit recommendations.
+                                </p>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6 mb-10">
+                                <div className="bg-app-card rounded-2xl p-6 border border-[#2e2e32] flex flex-col shadow-xl">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 className="text-lg font-bold mb-0.5 text-white">Tops</h3>
+                                            <p className="text-xs text-[#8a8a93]">Shirts, t-shirts, jackets, hoodies</p>
+                                        </div>
+                                        <span className="bg-[#2e2e34] text-violet-300 text-xs font-bold px-2.5 py-1 rounded-full">{wardrobe.tops.length}</span>
+                                    </div>
+                                    <UploadZone category="top" onUpload={(item) => handleUpload('top', item)}/>
+                                </div>
+                                <div className="bg-app-card rounded-2xl p-6 border border-[#2e2e32] flex flex-col shadow-xl">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 className="text-lg font-bold mb-0.5 text-white">Bottoms</h3>
+                                            <p className="text-xs text-[#8a8a93]">Jeans, trousers, shorts, skirts</p>
+                                        </div>
+                                        <span className="bg-[#2e2e34] text-teal-300 text-xs font-bold px-2.5 py-1 rounded-full">{wardrobe.bottoms.length}</span>
+                                    </div>
+                                    <UploadZone category="bottom" onUpload={(item) => handleUpload('bottom', item)}/>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <button onClick={() => setActiveTab('recommend')}
+                                    className="bg-app-accent hover:bg-app-accentHover text-white px-8 py-3.5 rounded-full font-semibold transition-all flex items-center gap-2 text-sm shadow-xl pulse-glow">
+                                    Generate outfits <Icons.Sparkles className="w-4 h-4"/>
+                                </button>
+                                <p className="text-[10px] tracking-[0.15em] text-[#8a8a93] uppercase font-semibold mt-4">Ready to refine your signature style</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Wardrobe Tab */}
+                    {activeTab === 'wardrobe' && (
+                        <div className="max-w-6xl mx-auto fade-in pt-12 pb-12">
+                            <h2 className="text-[32px] font-extrabold tracking-tight mb-8 text-white">Your Wardrobe</h2>
+                            <div className="mb-12">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <h3 className="text-lg font-semibold text-white">Tops</h3>
+                                    <span className="bg-app-card text-[#a1a1aa] px-2.5 py-0.5 rounded-full text-xs font-semibold border border-[#3f3f46]/50">{wardrobe.tops.length}</span>
+                                </div>
+                                {wardrobe.tops.length ? (
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                                        {wardrobe.tops.map(item => <WardrobeItem key={item.id} item={item} onDelete={handleDelete}/>)}
+                                    </div>
+                                ) : <p className="text-[#71717a] text-sm">No tops in wardrobe yet.</p>}
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <h3 className="text-lg font-semibold text-white">Bottoms</h3>
+                                    <span className="bg-app-card text-[#a1a1aa] px-2.5 py-0.5 rounded-full text-xs font-semibold border border-[#3f3f46]/50">{wardrobe.bottoms.length}</span>
+                                </div>
+                                {wardrobe.bottoms.length ? (
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                                        {wardrobe.bottoms.map(item => <WardrobeItem key={item.id} item={item} onDelete={handleDelete}/>)}
+                                    </div>
+                                ) : <p className="text-[#71717a] text-sm">No bottoms in wardrobe yet.</p>}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Generate Looks Tab */}
+                    {activeTab === 'recommend' && (
+                        <div className="max-w-[540px] mx-auto flex flex-col pt-20 fade-in">
+                            <div className="mb-10 text-center">
+                                <h2 className="text-[40px] font-extrabold tracking-tight mb-4 text-white">Curate your look</h2>
+                                <p className="text-[#a1a1aa] text-[15px]">Describe the occasion and let AI match your wardrobe.</p>
+                            </div>
+                            <div className="bg-app-card rounded-2xl p-8 border border-[#2e2e32] shadow-2xl">
+                                <label className="block text-sm font-semibold mb-3 text-white">What's the occasion?</label>
+                                <input
+                                    type="text" value={occasion} onChange={e => setOccasion(e.target.value)}
+                                    placeholder="e.g., casual friday, date night, office meeting..."
+                                    className="w-full p-4 bg-[#18181b] border border-[#3f3f46] rounded-xl text-white mb-6 focus:border-app-accent focus:ring-1 focus:ring-app-accent/50 transition-all placeholder:text-zinc-600"
+                                    onKeyDown={e => e.key === 'Enter' && handleRecommend()}
+                                />
+                                <div className="mb-8">
+                                    <p className="text-[10px] text-zinc-500 mb-3 font-semibold uppercase tracking-widest">Quick Options</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {['Casual', 'Office', 'Date Night', 'Party', 'Interview', 'Formal'].map(o => (
+                                            <button key={o} onClick={() => setOccasion(o)}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border
+                                                    ${occasion===o ? 'bg-app-accent text-white border-app-accent' : 'bg-[#2a2a30] text-zinc-300 hover:bg-[#3f3f46] hover:text-white border-transparent hover:border-zinc-500'}`}>
+                                                {o}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={handleRecommend} disabled={loading || !occasion.trim()}
+                                    className="w-full bg-app-accent hover:bg-app-accentHover text-white py-4 rounded-xl text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg">
+                                    {loading ? <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white/80"/> : <><Icons.Sparkles className="w-4 h-4"/> Generate Recommendations</>}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Results Tab */}
+                    {activeTab === 'recommendations' && (
+                        <div className="max-w-6xl mx-auto fade-in pt-8 pb-12">
+                            <div className="flex justify-between items-center mb-10 border-b border-[#2e2e32] pb-6">
+                                <div>
+                                    <h2 className="text-[32px] font-extrabold tracking-tight text-white mb-1">Your Curated Outfits</h2>
+                                    <p className="text-[#a1a1aa] text-sm">Tailored for: <span className="text-white font-medium">"{occasion}"</span></p>
+                                </div>
+                                <button onClick={() => setActiveTab('recommend')} className="px-4 py-2 bg-app-card border border-[#3f3f46] text-white rounded-lg text-sm font-medium hover:bg-[#3f3f46] transition-colors">
+                                    New Search
+                                </button>
+                            </div>
+                            {visibleRecs.length === 0 ? (
+                                <div className="text-center py-24 bg-app-card rounded-2xl border border-[#2e2e32]">
+                                    <p className="text-zinc-500 text-lg mb-6">No more outfits to show.</p>
+                                    <button onClick={() => setActiveTab('recommend')} className="bg-white text-black px-6 py-2.5 rounded-lg font-medium">Try Again</button>
+                                </div>
+                            ) : (
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {visibleRecs.map((rec, idx) => (
+                                        <OutfitCard key={`${rec.top.id}-${rec.bottom.id}-${idx}`} rec={rec} idx={idx}
+                                            liked={likedIds.has(`${rec.top.id}-${rec.bottom.id}`)}
+                                            onLike={handleLike} onReject={handleReject}/>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </main>
+            </div>
+            <ToastContainer/>
+        </div>
+    );
+};
+
+ReactDOM.render(<App/>, document.getElementById('root'));
+</script>
+</body>
+</html>

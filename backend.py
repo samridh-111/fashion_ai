@@ -5,7 +5,7 @@ Complete outfit recommendation system with ML, feedback, and scoring
 
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional, List
@@ -117,8 +117,17 @@ class AlternativeRequest(BaseModel):
 
 # API Routes
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
+    """Serve the frontend"""
+    frontend_path = Path(__file__).parent / "frontend.html"
+    if frontend_path.exists():
+        return HTMLResponse(content=frontend_path.read_text(), status_code=200)
+    return HTMLResponse(content="<h1>Frontend not found</h1>", status_code=404)
+
+
+@app.get("/health")
+async def health():
     """Health check"""
     return {
         "status": "online",
@@ -174,7 +183,7 @@ async def upload_clothing(
 
         # Create clothing item
         item = ClothingItem(
-            item_id=item_id,
+            id=item_id,
             filename=save_filename,
             path=save_path,
             category=category,

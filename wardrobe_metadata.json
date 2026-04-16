@@ -1,0 +1,234 @@
+{
+  "tops": [
+    {
+      "id": "b279175c-e59e-483a-abd5-b1c9ad9edd45",
+      "filename": "b279175c-e59e-483a-abd5-b1c9ad9edd45.jpg",
+      "path": "user_clothes/tops/b279175c-e59e-483a-abd5-b1c9ad9edd45.jpg",
+      "category": "top",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.484,
+      "saturation": 0.142,
+      "dominant_colors": [
+        [
+          159,
+          167,
+          177
+        ],
+        [
+          49,
+          49,
+          51
+        ],
+        [
+          83,
+          73,
+          74
+        ],
+        [
+          215,
+          206,
+          200
+        ],
+        [
+          104,
+          119,
+          138
+        ]
+      ]
+    },
+    {
+      "id": "079368cd-dbd0-4a8b-ae5e-13d77442742c",
+      "filename": "079368cd-dbd0-4a8b-ae5e-13d77442742c.jpg",
+      "path": "user_clothes/tops/079368cd-dbd0-4a8b-ae5e-13d77442742c.jpg",
+      "category": "top",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.607,
+      "saturation": 0.129,
+      "dominant_colors": [
+        [
+          25,
+          36,
+          39
+        ],
+        [
+          92,
+          100,
+          88
+        ],
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          139,
+          141,
+          110
+        ],
+        [
+          60,
+          70,
+          66
+        ]
+      ]
+    },
+    {
+      "id": "70e06c32-ba21-4989-9041-6eea0119b1a0",
+      "filename": "70e06c32-ba21-4989-9041-6eea0119b1a0.jpg",
+      "path": "user_clothes/tops/70e06c32-ba21-4989-9041-6eea0119b1a0.jpg",
+      "category": "top",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.277,
+      "saturation": 0.271,
+      "dominant_colors": [
+        [
+          19,
+          21,
+          29
+        ],
+        [
+          62,
+          66,
+          78
+        ],
+        [
+          37,
+          40,
+          51
+        ],
+        [
+          253,
+          253,
+          253
+        ],
+        [
+          160,
+          159,
+          158
+        ]
+      ]
+    }
+  ],
+  "bottoms": [
+    {
+      "id": "d2511c7c-03ee-4d6e-aff4-8abb05c3f206",
+      "filename": "d2511c7c-03ee-4d6e-aff4-8abb05c3f206.jpg",
+      "path": "user_clothes/bottoms/d2511c7c-03ee-4d6e-aff4-8abb05c3f206.jpg",
+      "category": "bottom",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.742,
+      "saturation": 0.3,
+      "dominant_colors": [
+        [
+          51,
+          32,
+          58
+        ],
+        [
+          171,
+          136,
+          97
+        ],
+        [
+          233,
+          218,
+          183
+        ],
+        [
+          99,
+          72,
+          73
+        ],
+        [
+          228,
+          186,
+          134
+        ]
+      ]
+    },
+    {
+      "id": "f58c2dad-164b-4fe6-bd64-d5c3c57db5b7",
+      "filename": "f58c2dad-164b-4fe6-bd64-d5c3c57db5b7.jpg",
+      "path": "user_clothes/bottoms/f58c2dad-164b-4fe6-bd64-d5c3c57db5b7.jpg",
+      "category": "bottom",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.653,
+      "saturation": 0.228,
+      "dominant_colors": [
+        [
+          36,
+          49,
+          75
+        ],
+        [
+          241,
+          243,
+          244
+        ],
+        [
+          125,
+          117,
+          85
+        ],
+        [
+          197,
+          196,
+          181
+        ],
+        [
+          99,
+          92,
+          59
+        ]
+      ]
+    },
+    {
+      "id": "f05195bb-5264-494f-b96f-f077b7e6e4b9",
+      "filename": "f05195bb-5264-494f-b96f-f077b7e6e4b9.jpg",
+      "path": "user_clothes/bottoms/f05195bb-5264-494f-b96f-f077b7e6e4b9.jpg",
+      "category": "bottom",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.719,
+      "saturation": 0.283,
+      "dominant_colors": [
+        [
+          254,
+          255,
+          255
+        ],
+        [
+          63,
+          90,
+          124
+        ],
+        [
+          191,
+          180,
+          143
+        ],
+        [
+          171,
+          145,
+          85
+        ],
+        [
+          98,
+          80,
+          45
+        ]
+      ]
+    }
+  ]
+}
