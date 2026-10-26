@@ -1,4 +1,4 @@
-# 🎨 Fashion AI: Your Personal AI Stylist
+#  Fashion AI: Your Personal AI Stylist
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.95+-05998b.svg)](https://fastapi.tiangolo.com/)
