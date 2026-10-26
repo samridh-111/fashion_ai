@@ -68,8 +68,12 @@ def load_wardrobe():
                 for item_data in metadata.get(category, []):
                     item_path = item_data['path']
                     if os.path.exists(item_path):
-                        # Re-extract features
-                        features = feature_extractor.extract_all_features(item_path)
+                        # Re-extract features, passing stored category_label for SBERT
+                        category_label = item_data.get('category_label') or f"casual {item_data.get('category', 'clothing')}"
+                        features = feature_extractor.extract_all_features(
+                            item_path,
+                            category_label=category_label,
+                        )
                         if features:
                             item = ClothingItem.from_dict(item_data, features)
                             wardrobe[category][item.id] = item
@@ -171,8 +175,15 @@ async def upload_clothing(
             content = await file.read()
             f.write(content)
 
+        # Build a meaningful category label for the text embedding.
+        # E.g. "casual top" or "bottom jeans". This is more meaningful than the UUID filename.
+        category_label = f"{category} clothing item"
+
         # Extract features
-        features = feature_extractor.extract_all_features(save_path)
+        features = feature_extractor.extract_all_features(
+            save_path,
+            category_label=category_label,
+        )
 
         if features is None:
             os.remove(save_path)
@@ -187,7 +198,8 @@ async def upload_clothing(
             filename=save_filename,
             path=save_path,
             category=category,
-            features=features
+            features=features,
+            category_label=category_label,
         )
 
         # Add to wardrobe
@@ -259,11 +271,11 @@ async def delete_item(item_id: str):
 @app.post("/api/recommend")
 async def recommend_outfits(request: RecommendationRequest):
     """
-    Get outfit recommendations
+    Get outfit recommendations.
 
-    Args:
-        occasion: Description of the occasion
-        num_results: Number of recommendations (default: 5)
+    Returns the best available outfits ranked by compatibility score.
+    All valid outfits from the user's wardrobe are considered; the 75%
+    threshold is used only for presentation tier labeling, not filtering.
     """
     if not wardrobe['tops'] or not wardrobe['bottoms']:
         raise HTTPException(
@@ -271,25 +283,30 @@ async def recommend_outfits(request: RecommendationRequest):
             detail="Please upload at least one top and one bottom"
         )
 
-    # Get recommendations
     tops_list = list(wardrobe['tops'].values())
     bottoms_list = list(wardrobe['bottoms'].values())
 
-    recommendations = recommendation_engine.recommend_outfits(
+    recommendations, _ = recommendation_engine.recommend_outfits(
         tops=tops_list,
         bottoms=bottoms_list,
         occasion=request.occasion,
         num_results=request.num_results,
-        exclude_rejected=True
+        exclude_rejected=True,
     )
 
     if not recommendations:
+        # Genuinely empty: all pairs were rejected or no valid combinations
         return {
             "recommendations": [],
-            "message": "No suitable outfits found. Try uploading more clothes or adjusting your occasion."
+            "message": (
+                "No outfit combinations could be generated. "
+                "This may happen if all combinations have been rejected "
+                "or if your wardrobe needs more items. "
+                "Try uploading additional clothing items."
+            )
         }
 
-    # Format response
+    # Separate into tiers for structured presentation
     result = []
     for rec in recommendations:
         result.append({
@@ -301,9 +318,14 @@ async def recommend_outfits(request: RecommendationRequest):
                 **rec.bottom.to_dict(),
                 "image_url": f"/images/bottoms/{rec.bottom.filename}"
             },
+            # match_score is a style compatibility heuristic (0-100).
+            # It is NOT a calibrated probability.
             "match_score": rec.percentage,
             "explanation": rec.explanation,
-            "score_breakdown": rec.breakdown
+            "score_breakdown": rec.breakdown,
+            "is_promoted": rec.is_promoted,
+            "tier": rec.tier,
+            "tier_label": rec.tier_label,
         })
 
     return {
@@ -390,7 +412,10 @@ async def get_alternative(request: AlternativeRequest):
         },
         "match_score": alternative.percentage,
         "explanation": alternative.explanation,
-        "score_breakdown": alternative.breakdown
+        "score_breakdown": alternative.breakdown,
+        "is_promoted": alternative.is_promoted,
+        "tier": alternative.tier,
+        "tier_label": alternative.tier_label,
     }
 
 

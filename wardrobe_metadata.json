@@ -1,63 +1,215 @@
 {
   "tops": [
     {
-      "id": "b279175c-e59e-483a-abd5-b1c9ad9edd45",
-      "filename": "b279175c-e59e-483a-abd5-b1c9ad9edd45.jpg",
-      "path": "user_clothes/tops/b279175c-e59e-483a-abd5-b1c9ad9edd45.jpg",
+      "id": "137ed538-36a8-4578-a994-4ee165b90b03",
+      "filename": "137ed538-36a8-4578-a994-4ee165b90b03.jpg",
+      "path": "user_clothes/tops/137ed538-36a8-4578-a994-4ee165b90b03.jpg",
       "category": "top",
       "tags": [],
       "has_visual": true,
       "has_color": true,
-      "brightness": 0.484,
-      "saturation": 0.142,
+      "brightness": 0.712,
+      "saturation": 0.153,
       "dominant_colors": [
         [
-          159,
-          167,
-          177
+          77,
+          56,
+          44
         ],
         [
-          49,
-          49,
-          51
+          100,
+          78,
+          67
         ],
         [
-          83,
-          73,
-          74
+          56,
+          37,
+          26
         ],
         [
-          215,
-          206,
-          200
+          235,
+          231,
+          235
         ],
         [
-          104,
-          119,
-          138
+          139,
+          118,
+          106
         ]
       ]
     },
     {
-      "id": "079368cd-dbd0-4a8b-ae5e-13d77442742c",
-      "filename": "079368cd-dbd0-4a8b-ae5e-13d77442742c.jpg",
-      "path": "user_clothes/tops/079368cd-dbd0-4a8b-ae5e-13d77442742c.jpg",
+      "id": "219dc597-8dc2-4a30-a9aa-92c127694417",
+      "filename": "219dc597-8dc2-4a30-a9aa-92c127694417.jpg",
+      "path": "user_clothes/tops/219dc597-8dc2-4a30-a9aa-92c127694417.jpg",
       "category": "top",
       "tags": [],
       "has_visual": true,
       "has_color": true,
-      "brightness": 0.607,
-      "saturation": 0.129,
+      "brightness": 0.731,
+      "saturation": 0.16,
       "dominant_colors": [
         [
-          25,
-          36,
-          39
+          57,
+          71,
+          91
         ],
         [
-          92,
-          100,
-          88
+          245,
+          245,
+          245
+        ],
+        [
+          98,
+          115,
+          144
+        ],
+        [
+          204,
+          207,
+          206
+        ],
+        [
+          76,
+          93,
+          119
+        ]
+      ]
+    },
+    {
+      "id": "7c398d07-f308-48ff-9564-b5f8ffb61aea",
+      "filename": "7c398d07-f308-48ff-9564-b5f8ffb61aea.jpg",
+      "path": "user_clothes/tops/7c398d07-f308-48ff-9564-b5f8ffb61aea.jpg",
+      "category": "top",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.498,
+      "saturation": 0.28,
+      "dominant_colors": [
+        [
+          99,
+          91,
+          75
+        ],
+        [
+          71,
+          62,
+          47
+        ],
+        [
+          217,
+          201,
+          175
+        ],
+        [
+          129,
+          126,
+          114
+        ],
+        [
+          34,
+          29,
+          19
+        ]
+      ]
+    },
+    {
+      "id": "5d6a6d7d-7e25-4f56-a44e-170bae912455",
+      "filename": "5d6a6d7d-7e25-4f56-a44e-170bae912455.jpg",
+      "path": "user_clothes/tops/5d6a6d7d-7e25-4f56-a44e-170bae912455.jpg",
+      "category": "top",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.559,
+      "saturation": 0.294,
+      "dominant_colors": [
+        [
+          70,
+          84,
+          111
+        ],
+        [
+          50,
+          64,
+          92
+        ],
+        [
+          253,
+          254,
+          254
+        ],
+        [
+          90,
+          104,
+          130
+        ],
+        [
+          28,
+          38,
+          63
+        ]
+      ]
+    },
+    {
+      "id": "d57afb43-ebdd-4135-a3fb-0795964ed5fd",
+      "filename": "d57afb43-ebdd-4135-a3fb-0795964ed5fd.jpg",
+      "path": "user_clothes/tops/d57afb43-ebdd-4135-a3fb-0795964ed5fd.jpg",
+      "category": "top",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.82,
+      "saturation": 0.213,
+      "dominant_colors": [
+        [
+          151,
+          169,
+          200
+        ],
+        [
+          179,
+          193,
+          217
+        ],
+        [
+          83,
+          99,
+          132
+        ],
+        [
+          124,
+          139,
+          171
+        ],
+        [
+          201,
+          215,
+          238
+        ]
+      ]
+    },
+    {
+      "id": "cd1fdab4-2d31-4c56-8bcf-f1d7bcf87747",
+      "filename": "cd1fdab4-2d31-4c56-8bcf-f1d7bcf87747.jpg",
+      "path": "user_clothes/tops/cd1fdab4-2d31-4c56-8bcf-f1d7bcf87747.jpg",
+      "category": "top",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.699,
+      "saturation": 0.194,
+      "dominant_colors": [
+        [
+          11,
+          30,
+          28
+        ],
+        [
+          174,
+          182,
+          178
         ],
         [
           255,
@@ -65,168 +217,358 @@
           255
         ],
         [
-          139,
-          141,
-          110
+          22,
+          46,
+          44
         ],
         [
-          60,
-          70,
-          66
+          95,
+          106,
+          102
         ]
       ]
     },
     {
-      "id": "70e06c32-ba21-4989-9041-6eea0119b1a0",
-      "filename": "70e06c32-ba21-4989-9041-6eea0119b1a0.jpg",
-      "path": "user_clothes/tops/70e06c32-ba21-4989-9041-6eea0119b1a0.jpg",
+      "id": "048eb6d2-e319-49e2-9539-364133941d01",
+      "filename": "048eb6d2-e319-49e2-9539-364133941d01.jpg",
+      "path": "user_clothes/tops/048eb6d2-e319-49e2-9539-364133941d01.jpg",
       "category": "top",
       "tags": [],
       "has_visual": true,
       "has_color": true,
-      "brightness": 0.277,
-      "saturation": 0.271,
+      "brightness": 0.496,
+      "saturation": 0.129,
       "dominant_colors": [
         [
-          19,
-          21,
-          29
+          214,
+          212,
+          215
         ],
         [
-          62,
-          66,
-          78
+          18,
+          14,
+          18
         ],
         [
-          37,
-          40,
-          51
+          254,
+          254,
+          254
         ],
         [
-          253,
-          253,
-          253
+          83,
+          80,
+          83
         ],
         [
-          160,
-          159,
-          158
+          154,
+          151,
+          155
+        ]
+      ]
+    },
+    {
+      "id": "3bc42940-a91d-4469-8a6c-8932a975de54",
+      "filename": "3bc42940-a91d-4469-8a6c-8932a975de54.jpg",
+      "path": "user_clothes/tops/3bc42940-a91d-4469-8a6c-8932a975de54.jpg",
+      "category": "top",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.776,
+      "saturation": 0.15,
+      "dominant_colors": [
+        [
+          225,
+          231,
+          232
+        ],
+        [
+          23,
+          64,
+          50
+        ],
+        [
+          204,
+          209,
+          207
+        ],
+        [
+          173,
+          183,
+          176
+        ],
+        [
+          38,
+          81,
+          67
         ]
       ]
     }
   ],
   "bottoms": [
     {
-      "id": "d2511c7c-03ee-4d6e-aff4-8abb05c3f206",
-      "filename": "d2511c7c-03ee-4d6e-aff4-8abb05c3f206.jpg",
-      "path": "user_clothes/bottoms/d2511c7c-03ee-4d6e-aff4-8abb05c3f206.jpg",
+      "id": "c3e2fb8d-374f-4223-98d9-69a667927c11",
+      "filename": "c3e2fb8d-374f-4223-98d9-69a667927c11.jpg",
+      "path": "user_clothes/bottoms/c3e2fb8d-374f-4223-98d9-69a667927c11.jpg",
       "category": "bottom",
       "tags": [],
       "has_visual": true,
       "has_color": true,
-      "brightness": 0.742,
-      "saturation": 0.3,
+      "brightness": 0.66,
+      "saturation": 0.003,
       "dominant_colors": [
         [
-          51,
-          32,
+          58,
+          58,
           58
         ],
         [
-          171,
-          136,
-          97
-        ],
-        [
-          233,
-          218,
-          183
-        ],
-        [
-          99,
-          72,
-          73
-        ],
-        [
-          228,
-          186,
-          134
-        ]
-      ]
-    },
-    {
-      "id": "f58c2dad-164b-4fe6-bd64-d5c3c57db5b7",
-      "filename": "f58c2dad-164b-4fe6-bd64-d5c3c57db5b7.jpg",
-      "path": "user_clothes/bottoms/f58c2dad-164b-4fe6-bd64-d5c3c57db5b7.jpg",
-      "category": "bottom",
-      "tags": [],
-      "has_visual": true,
-      "has_color": true,
-      "brightness": 0.653,
-      "saturation": 0.228,
-      "dominant_colors": [
-        [
-          36,
-          49,
-          75
-        ],
-        [
-          241,
-          243,
-          244
-        ],
-        [
-          125,
-          117,
-          85
-        ],
-        [
-          197,
-          196,
-          181
-        ],
-        [
-          99,
           92,
-          59
-        ]
-      ]
-    },
-    {
-      "id": "f05195bb-5264-494f-b96f-f077b7e6e4b9",
-      "filename": "f05195bb-5264-494f-b96f-f077b7e6e4b9.jpg",
-      "path": "user_clothes/bottoms/f05195bb-5264-494f-b96f-f077b7e6e4b9.jpg",
-      "category": "bottom",
-      "tags": [],
-      "has_visual": true,
-      "has_color": true,
-      "brightness": 0.719,
-      "saturation": 0.283,
-      "dominant_colors": [
+          92,
+          92
+        ],
         [
-          254,
+          255,
           255,
           255
         ],
         [
-          63,
-          90,
-          124
+          221,
+          220,
+          221
         ],
         [
-          191,
-          180,
-          143
+          124,
+          124,
+          125
+        ]
+      ]
+    },
+    {
+      "id": "47dae8f9-3627-4fc3-98ae-35ddd878f6d5",
+      "filename": "47dae8f9-3627-4fc3-98ae-35ddd878f6d5.jpg",
+      "path": "user_clothes/bottoms/47dae8f9-3627-4fc3-98ae-35ddd878f6d5.jpg",
+      "category": "bottom",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.53,
+      "saturation": 0.152,
+      "dominant_colors": [
+        [
+          43,
+          47,
+          59
         ],
         [
-          171,
+          201,
+          198,
+          192
+        ],
+        [
+          181,
+          175,
+          167
+        ],
+        [
+          23,
+          26,
+          33
+        ],
+        [
+          158,
+          152,
+          144
+        ]
+      ]
+    },
+    {
+      "id": "2f3c0755-d223-4d5d-b39c-271fe2aace58",
+      "filename": "2f3c0755-d223-4d5d-b39c-271fe2aace58.jpg",
+      "path": "user_clothes/bottoms/2f3c0755-d223-4d5d-b39c-271fe2aace58.jpg",
+      "category": "bottom",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.339,
+      "saturation": 0.112,
+      "dominant_colors": [
+        [
+          62,
+          61,
+          66
+        ],
+        [
+          22,
+          21,
+          25
+        ],
+        [
+          45,
+          44,
+          49
+        ],
+        [
           145,
-          85
+          135,
+          134
         ],
         [
-          98,
-          80,
-          45
+          254,
+          254,
+          254
+        ]
+      ]
+    },
+    {
+      "id": "a7bb276f-102b-43af-9c72-555e73bfca7a",
+      "filename": "a7bb276f-102b-43af-9c72-555e73bfca7a.jpg",
+      "path": "user_clothes/bottoms/a7bb276f-102b-43af-9c72-555e73bfca7a.jpg",
+      "category": "bottom",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.683,
+      "saturation": 0.149,
+      "dominant_colors": [
+        [
+          70,
+          53,
+          47
+        ],
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          89,
+          72,
+          66
+        ],
+        [
+          52,
+          36,
+          31
+        ],
+        [
+          198,
+          196,
+          200
+        ]
+      ]
+    },
+    {
+      "id": "883db89f-9b0e-4d86-98db-dabfa2033889",
+      "filename": "883db89f-9b0e-4d86-98db-dabfa2033889.jpg",
+      "path": "user_clothes/bottoms/883db89f-9b0e-4d86-98db-dabfa2033889.jpg",
+      "category": "bottom",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.518,
+      "saturation": 0.184,
+      "dominant_colors": [
+        [
+          198,
+          194,
+          192
+        ],
+        [
+          250,
+          245,
+          242
+        ],
+        [
+          101,
+          103,
+          114
+        ],
+        [
+          69,
+          72,
+          84
+        ],
+        [
+          36,
+          40,
+          52
+        ]
+      ]
+    },
+    {
+      "id": "6503d880-21f1-4612-baca-64a0159ff0c4",
+      "filename": "6503d880-21f1-4612-baca-64a0159ff0c4.jpg",
+      "path": "user_clothes/bottoms/6503d880-21f1-4612-baca-64a0159ff0c4.jpg",
+      "category": "bottom",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.643,
+      "saturation": 0.196,
+      "dominant_colors": [
+        [
+          201,
+          204,
+          205
+        ],
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          15,
+          20,
+          31
+        ],
+        [
+          116,
+          119,
+          122
+        ],
+        [
+          27,
+          34,
+          46
+        ]
+      ]
+    },
+    {
+      "id": "8d329002-8106-48a5-9dcb-65ffc66c97c2",
+      "filename": "8d329002-8106-48a5-9dcb-65ffc66c97c2.jpg",
+      "path": "user_clothes/bottoms/8d329002-8106-48a5-9dcb-65ffc66c97c2.jpg",
+      "category": "bottom",
+      "tags": [],
+      "has_visual": true,
+      "has_color": true,
+      "brightness": 0.45,
+      "saturation": 0.079,
+      "dominant_colors": [
+        [
+          27,
+          26,
+          26
+        ],
+        [
+          116,
+          36,
+          47
+        ],
+        [
+          155,
+          149,
+          150
+        ],
+        [
+          62,
+          63,
+          63
+        ],
+        [
+          254,
+          254,
+          254
         ]
       ]
     }

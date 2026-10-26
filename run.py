@@ -70,17 +70,16 @@ def start_backend():
 
 
 def open_frontend():
-    """Open frontend in default browser"""
-    frontend_path = Path(__file__).parent / "frontend.html"
-
-    if frontend_path.exists():
-        print("\n" + "=" * 60)
-        print("Opening frontend in browser...")
-        print("=" * 60)
-        webbrowser.open(f"file://{frontend_path.resolve()}")
-        print(f"✓ Frontend opened: {frontend_path}")
-    else:
-        print("✗ frontend.html not found in", str(frontend_path.parent))
+    """Open frontend served by FastAPI in default browser"""
+    # NOTE: We open the FastAPI-served URL, NOT the file:// path.
+    # Opening file:// would cause CORS failures because the frontend
+    # hardcodes API_BASE = 'http://localhost:8000'.
+    url = "http://localhost:8000"
+    print("\n" + "=" * 60)
+    print("Opening frontend in browser...")
+    print("=" * 60)
+    webbrowser.open(url)
+    print(f"✓ Frontend opened: {url}")
 
 
 def main():

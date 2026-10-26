@@ -28,3 +28,4 @@ Thumbs.db
 
 model/*.keras
 user_clothes/
+feedback.json
